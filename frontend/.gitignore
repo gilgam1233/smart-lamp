@@ -1,0 +1,8 @@
+# frontend/.gitignore
+.env
+node_modules/
+.expo/
+android/app/build/
+ios/build/
+*.apk
+*.aab
