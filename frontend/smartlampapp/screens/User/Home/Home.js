@@ -8,6 +8,7 @@ import { authApis, endpoints } from '../../../configs/Apis';
 import styles from './Styles';
 import * as SecureStore from 'expo-secure-store';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { Client } from 'paho-mqtt';
 
 const HomeScreen = () => {
   const navigation = useNavigation();
@@ -35,11 +36,65 @@ const HomeScreen = () => {
   };
 
   useEffect(() => {
+    let mqttClient = null;
+
     if (user) {
+      // 1. Tải danh sách và trạng thái hiện tại từ DB (như cũ)
       fetchDevices();
+
+      const clientId = `rn_app_${Math.random().toString(16).slice(2, 10)}`;
+      
+      mqttClient = new Client("smart-lamp.io.vn", 9001, "/mqtt", clientId);
+
+      mqttClient.onConnectionLost = (responseObject) => {
+        if (responseObject.errorCode !== 0) {
+          console.log("MQTT Connection Lost:", responseObject.errorMessage);
+        }
+      };
+
+      mqttClient.onMessageArrived = (message) => {
+        const topic = message.destinationName;
+        const payload = message.payloadString;
+        console.log("App nhận được MQTT:", topic, payload);
+
+        const parts = topic.split('/');
+        if (parts.length === 3 && parts[2] === 'trangthai') {
+          const device_id = parts[1];
+          const is_on = payload === "ON";
+
+          setDevices(prevDevices => 
+            prevDevices.map(lamp => 
+              lamp.device_id === device_id ? { ...lamp, status: is_on } : lamp
+            )
+          );
+        }
+      };
+
+      const connectOptions = {
+        onSuccess: () => {
+          console.log("App kết nối MQTT thành công!");
+          mqttClient.subscribe("smarthome/+/trangthai");
+        },
+        onFailure: (err) => {
+          console.log("App kết nối MQTT thất bại:", err.errorMessage);
+        },
+        useSSL: false,
+        userName: "backend_admin", 
+        password: "backend", 
+        reconnect: true
+      };
+
+      mqttClient.connect(connectOptions);
+
     } else {
       setDevices([]);
     }
+
+    return () => {
+      if (mqttClient && mqttClient.isConnected()) {
+        mqttClient.disconnect();
+      }
+    };
   }, [user]);
 
   // 2. THÊM THIẾT BỊ MỚI

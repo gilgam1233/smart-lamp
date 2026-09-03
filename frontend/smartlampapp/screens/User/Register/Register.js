@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import {
-  View, Text, TextInput, TouchableOpacity, SafeAreaView,
+  View, Text, TextInput, TouchableOpacity,
   Alert, ActivityIndicator, ScrollView, Platform, Keyboard, KeyboardAvoidingView,Modal
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import DateTimePicker from '@react-native-community/datetimepicker';
 

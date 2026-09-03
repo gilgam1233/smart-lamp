@@ -1,0 +1,39 @@
+name: Deploy Smart Lamp Backend
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - 'backend/**' 
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Lấy code từ repo
+      uses: actions/checkout@v3
+
+    - name: Đăng nhập vào Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Đóng gói và đẩy Image lên kho (Build & Push)
+      uses: docker/build-push-action@v4
+      with:
+        context: ./backend 
+        push: true
+        tags: ${{ secrets.DOCKER_USERNAME }}/smart-lamp-backend:latest
+
+    - name: Gọi qua VPS để tải và chạy code mới
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.VPS_HOST }}
+        username: root
+        key: ${{ secrets.VPS_SSH_KEY }}
+        script: |
+          # Di chuyển vào đúng thư mục chứa file docker-compose.yml trên VPS của bạn
+          cd /var/www/smart_lamp_backend
+          docker-compose pull
+          docker-compose up -d
