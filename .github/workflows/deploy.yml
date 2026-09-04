@@ -29,11 +29,11 @@ jobs:
     - name: Gọi qua VPS để tải và chạy code mới
       uses: appleboy/ssh-action@master
       with:
-        host: ${{ secrets.VPS_HOST }}          # Đã đổi cho khớp ảnh
-        username: ${{ secrets.VPS_USERNAME }}  # Nhớ tạo thêm secret này trên GitHub
-        key: ${{ secrets.VPS_SSH_KEY }}        # Dùng key thay vì password
+        host: ${{ secrets.VPS_HOST }}          
+        username: ${{ secrets.VPS_USERNAME }} 
+        key: ${{ secrets.VPS_SSH_KEY }}       
         script: |
-          cd /smartlamp/backend
+          cd /smart-lamp/backend
           
           sudo docker pull ${{ secrets.DOCKER_USERNAME }}/smart-lamp-backend:latest
           
