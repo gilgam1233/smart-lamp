@@ -33,7 +33,7 @@ jobs:
         username: ${{ secrets.VPS_USERNAME }} 
         key: ${{ secrets.VPS_SSH_KEY }}       
         script: |
-          cd /smart-lamp/backend
+          cd smart-lamp/backend
           
           sudo docker pull ${{ secrets.DOCKER_USERNAME }}/smart-lamp-backend:latest
           

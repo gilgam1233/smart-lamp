@@ -43,13 +43,11 @@ class SmartLampViewSet(viewsets.ViewSet,generics.ListAPIView):
             return Response({"error": "Vui lòng cung cấp mã thiết bị."}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            # 1. Tìm trong kho xem có tồn tại cái đèn phần cứng này không
             lamp = SmartLamp.objects.get(device_id=device_id)
         except SmartLamp.DoesNotExist:
             return Response({"error": "Mã thiết bị không hợp lệ hoặc không do chúng tôi sản xuất!"},
                             status=status.HTTP_404_NOT_FOUND)
 
-        # 2. Kiểm tra xem đèn đã có chủ chưa
         if lamp.user is not None:
             if lamp.user == request.user:
                 return Response({"error": "Bạn đã thêm thiết bị này vào ứng dụng rồi!"},
@@ -58,7 +56,6 @@ class SmartLampViewSet(viewsets.ViewSet,generics.ListAPIView):
                 {"error": "Thiết bị này đang được liên kết với một tài khoản khác. Vui lòng reset thiết bị!"},
                 status=status.HTTP_400_BAD_REQUEST)
 
-        # 3. Gán chủ mới cho đèn (Bind)
         lamp.user = request.user
         lamp.name = name
         lamp.save()
@@ -72,16 +69,13 @@ class SmartLampViewSet(viewsets.ViewSet,generics.ListAPIView):
     @action(methods=['delete'], url_path='remove', detail=True)
     def remove_lamp(self, request, pk=None):
         try:
-            # Tự tay truy vấn bằng device_id dựa vào biến pk từ URL
-            # Vẫn dùng get_queryset() để đảm bảo user chỉ được xóa đèn của chính mình
             lamp = self.get_queryset().get(device_id=pk)
         except SmartLamp.DoesNotExist:
             return Response({"error": "Không tìm thấy thiết bị hoặc bạn không có quyền xóa!"},
                             status=status.HTTP_404_NOT_FOUND)
 
-        # Trả thiết bị về trạng thái vô chủ (Unbind) thay vì xóa hoàn toàn khỏi DB
         lamp.user = None
-        lamp.name = "Đèn thông minh"  # (Tùy chọn) Reset lại tên gốc
+        lamp.name = "Đèn thông minh"
         lamp.save()
 
         return Response({"message": "Đã xóa thiết bị khỏi tài khoản!"}, status=status.HTTP_200_OK)
@@ -89,7 +83,6 @@ class SmartLampViewSet(viewsets.ViewSet,generics.ListAPIView):
     @action(methods=['patch'], url_path='rename', detail=True)
     def rename_lamp(self, request, pk=None):
         try:
-            # Tự tay truy vấn bằng device_id thay vì dùng get_object()
             lamp = self.get_queryset().get(device_id=pk)
         except SmartLamp.DoesNotExist:
             return Response({"error": "Không tìm thấy đèn hoặc bạn không có quyền sửa!"},
