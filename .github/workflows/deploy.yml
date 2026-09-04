@@ -27,17 +27,17 @@ jobs:
         tags: ${{ secrets.DOCKER_USERNAME }}/smart-lamp-backend:latest
 
     - name: Gọi qua VPS để tải và chạy code mới
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          password: ${{ secrets.PASSWORD }}
-          script: |
-            cd /smartlamp/backend/.env
-            
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/smart-lamp-backend:latest
-            
-            sudo docker stop backend_prod || true
-            sudo docker rm backend_prod || true
-            
-            sudo docker run -d --name backend_prod -p 8000:8000 --env-file .env <dockerhub-username>/smart-lamp-prod:latest
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        password: ${{ secrets.PASSWORD }}
+        script: |
+          cd /smartlamp/backend
+          
+          sudo docker pull ${{ secrets.DOCKER_USERNAME }}/smart-lamp-backend:latest
+          
+          sudo docker stop backend_prod || true
+          sudo docker rm backend_prod || true
+          
+          sudo docker run -d --name backend_prod -p 8000:8000 --env-file .env ${{ secrets.DOCKER_USERNAME }}/smart-lamp-backend:latest
