@@ -23,6 +23,8 @@ jobs:
         pip install -r backend/requirements.txt
 
     - name: Chạy kiểm thử tự động (Unit Test)
+      env:
+        MQTT_PORT: ${{ secrets.MQTT_PORT }}
       run: |
         cd backend
         python manage.py test smart_lamp
