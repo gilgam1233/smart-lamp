@@ -5,7 +5,7 @@ on:
     branches: [ "main" ]
     paths:
       - 'backend/**' 
-
+      - '.github/workflows/**'
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
