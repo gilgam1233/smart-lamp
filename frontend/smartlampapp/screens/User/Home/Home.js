@@ -73,7 +73,7 @@ const HomeScreen = () => {
       const connectOptions = {
         onSuccess: () => {
           console.log("App kết nối MQTT thành công!");
-          mqttClient.subscribe("smarthome/+/trangthai");
+          mqttClient.subscribe("denthongminh/+/trangthai");
         },
         onFailure: (err) => {
           console.log("App kết nối MQTT thất bại:", err.errorMessage);
