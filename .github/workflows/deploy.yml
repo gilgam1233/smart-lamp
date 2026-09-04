@@ -25,6 +25,8 @@ jobs:
     - name: Chạy kiểm thử tự động (Unit Test)
       env:
         MQTT_PORT: ${{ secrets.MQTT_PORT }}
+        MQTT_HOST: "localhost"                       
+        SECRET_KEY: "dummy-secret-key-for-testing"
       run: |
         cd backend
         python manage.py test smart_lamp
