@@ -19,19 +19,17 @@ const Profile = () => {
     const [isKeyboardVisible, setKeyboardVisible] = useState(false);
     const [showDatePicker, setShowDatePicker] = useState(false);
 
-    // ĐÃ SỬA: Loại bỏ ".profile" vì cấu trúc Database mới là phẳng (flat)
     const [editData, setEditData] = useState({
         first_name: user?.first_name || '',
         last_name: user?.last_name || '',
         email: user?.email || '',
         phone: user?.phone || '',
-        gender: user?.gender === false ? 'Nữ' : 'Nam', // Django boolean: True=Nam, False=Nữ
+        gender: user?.gender === false ? 'Nữ' : 'Nam',
         dob: user?.dob || ''
     });
 
     const loadProfile = async () => {
         try {
-            // let token = await AsyncStorage.getItem('access_token');
             let token =  await SecureStore.getItemAsync('access_token');
 
             let res = await authApis(token).get(endpoints['current-user']);
@@ -89,7 +87,6 @@ const Profile = () => {
             setLoading(true);
             setErr("");
             
-            // ĐÃ SỬA: Đóng gói dữ liệu thẳng hàng, không bọc trong object profile
             const updatePayload = {
                 first_name: editData.first_name,
                 last_name: editData.last_name,
@@ -99,7 +96,6 @@ const Profile = () => {
                 dob: editData.dob
             };
 
-            // let token = await AsyncStorage.getItem('access_token');
             let token =  await SecureStore.getItemAsync('access_token');
 
             let res = await authApis(token).patch(endpoints['current-user'], updatePayload);
@@ -228,7 +224,6 @@ const Profile = () => {
                                     <Icon source="gender-male-female" size={22} color="#5D9CEC" />
                                     <Text style={Styles.infoTitle}>Giới tính</Text>
                                 </View>
-                                {/* ĐÃ SỬA: Thay True thành true */}
                                 <Text style={Styles.text}>{user.gender === false ? 'Nữ' : (user.gender === true ? 'Nam' : 'Chưa cập nhật')}</Text>
                             </View>
                             <Divider />

@@ -24,7 +24,6 @@ const App = () => {
   useEffect(() => {
     const restoreSession = async () => {
       try {
-        // Lấy Token và dữ liệu User từ bộ nhớ tạm của điện thoại
         const token = await SecureStore.getItemAsync('access_token');
         const savedUserStr = await SecureStore.getItemAsync('user');
         

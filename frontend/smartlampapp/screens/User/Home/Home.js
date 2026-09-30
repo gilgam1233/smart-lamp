@@ -26,7 +26,6 @@ const HomeScreen = () => {
   // 1. LẤY DANH SÁCH THIẾT BỊ TỪ BACKEND
   const fetchDevices = async () => {
     try {
-      // let token = await AsyncStorage.getItem('access_token');
       let token =  await SecureStore.getItemAsync('access_token');
       let res = await authApis(token).get(endpoints['lamps']);
       setDevices(res.data);
@@ -39,7 +38,6 @@ const HomeScreen = () => {
     let mqttClient = null;
 
     if (user) {
-      // 1. Tải danh sách và trạng thái hiện tại từ DB (như cũ)
       fetchDevices();
 
       const clientId = `rn_app_${Math.random().toString(16).slice(2, 10)}`;
@@ -97,14 +95,12 @@ const HomeScreen = () => {
     };
   }, [user]);
 
-  // 2. THÊM THIẾT BỊ MỚI
   const handleAddDevice = async () => {
     if (!newDeviceId) {
       Alert.alert('Lỗi', 'Vui lòng nhập mã thiết bị!');
       return;
     }
     try {
-      // let token = await AsyncStorage.getItem('access_token');
       let token =  await SecureStore.getItemAsync('access_token');
 
       await authApis(token).post(`${endpoints['lamps']}add/`, {
@@ -122,7 +118,7 @@ const HomeScreen = () => {
       if (ex.response && ex.response.data && ex.response.data.error) {
           errorMsg = ex.response.data.error;
       }
-      Alert.alert('Lỗi', errorMsg);
+      // Alert.alert('Lỗi', errorMsg);
     }
   };
 
@@ -139,7 +135,6 @@ const HomeScreen = () => {
       return;
     }
     try {
-      // let token = await AsyncStorage.getItem('access_token');
       let token =  await SecureStore.getItemAsync('access_token');
 
      await authApis(token).patch(`${endpoints['lamps']}${editingDevice.device_id}/rename/`, {
@@ -165,20 +160,19 @@ const HomeScreen = () => {
         { text: "Hủy", style: "cancel" },
         { 
           text: "Xóa", 
-          style: "destructive", // Giúp nút Xóa có màu đỏ trên iOS
+          style: "destructive",
           onPress: async () => {
             try {
-              // let token = await AsyncStorage.getItem('access_token');
               let token =  await SecureStore.getItemAsync('access_token');
 
               await authApis(token).delete(`${endpoints['lamps']}${lamp.device_id}/remove/`);
               
               Alert.alert('Thành công', 'Đã xóa thiết bị khỏi tài khoản!');
-              fetchDevices(); // Load lại danh sách sau khi xóa
+              fetchDevices();
 
             } catch (ex) {
               Alert.alert('Lỗi', 'Không thể xóa thiết bị lúc này!');
-              console.error(ex);
+              // console.error(ex);
             }
           }
         }
@@ -198,7 +192,6 @@ const HomeScreen = () => {
     );
 
     try {
-      // let token = await AsyncStorage.getItem('access_token');
       let token = await SecureStore.getItemAsync('access_token');
 
       await authApis(token).post(`${endpoints['lamps']}toggle/`, {
@@ -248,7 +241,7 @@ const HomeScreen = () => {
               <IconButton 
                 icon="trash-can-outline" 
                 size={18} 
-                iconColor="#FF4D4D" // Màu đỏ báo hiệu hành động xóa
+                iconColor="#FF4D4D"
                 onPress={() => handleRemoveDevice(item)}
                 style={styles.editIcon}
               />

@@ -7,7 +7,6 @@ import { MyContext } from '../../../configs/Contexts';
 import * as SecureStore from 'expo-secure-store';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-// ĐÃ SỬA 1: Import thêm authApis từ file Apis.js
 import Apis, { authApis, endpoints } from '../../../configs/Apis'; 
 import styles from './Styles'; 
 
@@ -42,14 +41,11 @@ const Login = () => {
       
       const token = res.data.access_token;
       
-      // ĐÃ SỬA 2: Dùng authApis(token) thay vì Apis.get để đảm bảo Token được đính kèm đúng chuẩn
       const userRes = await authApis(token).get(endpoints['current-user']);
       
       const userData = userRes.data;
       
-      // await AsyncStorage.setItem('access_token', token);
-      // await AsyncStorage.setItem('user', JSON.stringify(userData));
-      
+
       await SecureStore.setItemAsync('access_token', token);
       await SecureStore.setItemAsync('user', JSON.stringify(userData));
 

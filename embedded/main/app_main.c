@@ -192,7 +192,6 @@ void generate_dynamic_topics()
 
     sprintf(DEVICE_ID, "LAMP_%02X%02X%02X", mac[3], mac[4], mac[5]);
 
-    // SỬA TẠI ĐÂY: Dùng %s để chèn SECRET_BASE_TOPIC vào
     sprintf(TOPIC_CMD, "%s/%s/cmd", SECRET_BASE_TOPIC, DEVICE_ID);
     sprintf(TOPIC_STATUS, "%s/%s/trangthai", SECRET_BASE_TOPIC, DEVICE_ID);
 

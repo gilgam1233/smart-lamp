@@ -64,7 +64,6 @@ const handleRegister = async () => {
       try {
         setLoading(true);
 
-        // BƯỚC 1: Đổi từ JSON object sang FormData giống hệt Postman
         let form = new FormData();
         form.append('username', user.username);
         form.append('password', user.password);
@@ -74,13 +73,10 @@ const handleRegister = async () => {
         form.append('phone', user.phone);
         form.append('dob', user.dob);
         
-        // Theo Postman, bạn gửi 1 cho Nam và 0 cho Nữ. 
-        // Nếu backend nhận True/False thì truyền chuỗi 'true'/'false'
         form.append('gender', user.gender === 'Nam' ? '1' : '0'); 
 
         console.log(">>> Đang gửi dữ liệu đăng ký bằng form-data");
 
-        // BƯỚC 2: Thêm header multipart/form-data
         let res = await Apis.post(endpoints['register'], form, {
             headers: {
                 'Content-Type': 'multipart/form-data'
@@ -97,7 +93,7 @@ const handleRegister = async () => {
           errorMsg = Object.values(ex.response.data).flat().join('\n');
         }
 
-        Alert.alert('Đăng ký thất bại', errorMsg);
+        Alert.alert('Đăng ký thất bại');
         console.error(ex);
       } finally {
         setLoading(false);
@@ -150,7 +146,6 @@ const handleRegister = async () => {
             <RadioButton.Group onValueChange={newValue => handleChange('gender', newValue)} value={user.gender}>
               <View style={{ flexDirection: 'row' }}>
 
-                {/* Bọc TouchableOpacity để bấm vào đâu trong khu vực này cũng ăn ngay */}
                 <TouchableOpacity
                   style={{ flexDirection: 'row', alignItems: 'center', marginRight: 20 }}
                   onPress={() => handleChange('gender', 'Nam')} // Cập nhật state ngay lập tức
@@ -160,7 +155,6 @@ const handleRegister = async () => {
                   <Text style={{ fontSize: 16 }}>Nam</Text>
                 </TouchableOpacity>
 
-                {/* Tương tự cho giới tính Nữ */}
                 <TouchableOpacity
                   style={{ flexDirection: 'row', alignItems: 'center' }}
                   onPress={() => handleChange('gender', 'Nữ')}
@@ -174,7 +168,6 @@ const handleRegister = async () => {
             </RadioButton.Group>
           </View>
 
-          {/* Ngày sinh */}
           <TouchableOpacity onPress={() => { setShowDatePicker(true); Keyboard.dismiss(); }}>
             <View pointerEvents="none">
               <TextInput
@@ -261,7 +254,6 @@ const handleRegister = async () => {
         <View style={styles.modalOverlay}>
           <View style={[styles.modalContent, { alignItems: 'center', paddingVertical: 30 }]}>
             
-            {/* Icon check xanh lá cây cho đẹp */}
             <View style={{ backgroundColor: '#E8F5E9', borderRadius: 50, padding: 15, marginBottom: 15 }}>
               <Text style={{ fontSize: 40 }}>✅</Text>
             </View>
@@ -271,7 +263,6 @@ const handleRegister = async () => {
               Tài khoản của bạn đã được tạo. Vui lòng đăng nhập để trải nghiệm ngay.
             </Text>
 
-            {/* Đây chính là nút TouchableOpacity mà bạn muốn! */}
             <TouchableOpacity 
               style={[styles.authButton, { width: '100%' }]} 
               onPress={() => {
